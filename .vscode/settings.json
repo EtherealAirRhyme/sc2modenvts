@@ -1,0 +1,10 @@
+{
+    "json.schemas": [
+        {
+            "fileMatch": [
+                "boot.json"
+            ],
+            "url": "./packages/scripts/template/boot.schema.json"
+        }
+    ],
+}

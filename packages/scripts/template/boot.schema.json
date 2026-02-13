@@ -1,0 +1,194 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "nickName": {
+            "description": "用户友好的名字，会在mod管理器中显示",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "description": "(推荐)多语言支持",
+                    "properties": {
+                        "cn": {
+                            "type": "string",
+                            "description": "中文名称"
+                        },
+                        "en": {
+                            "type": "string",
+                            "description": "English Name"
+                        }
+                    }
+                }
+            ]
+        },
+        "alias": {
+            "type": "array",
+            "description": "mod别名，用于提供兼容性。例如，如果一个mod的名字变更了，可以在这里添加旧名字，以便在加载时找到正确的mod。\n常见的用例是，需要跨游戏迁移mod，但又需要让其他旧游戏的mod能在新游戏上正常识别到此mod，可以设置别名，表示当前mod提供的功能与旧mod相同。",
+            "items": {
+                "type": "string"
+            },
+            "uniqueItems": true
+        },
+        "version": {
+            "type": "string",
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+            "description": "语义化的模组版本"
+        },
+        "scriptFileList_inject_early": {
+            "type": "array",
+            "description": "提前注入的 js 脚本 ， 会在当前mod加载后立即插入到dom中由浏览器按照script的标注执行方式执行",
+            "items": {
+                "type": "string"
+            }
+        },
+        "scriptFileList_earlyload": {
+            "type": "array",
+            "description": "提前加载的 js 脚本 ， 会在当前mod加载后，inject_early脚本全部插入完成后，由modloader执行并等待异步指令返回，可以在这里读取到未修改的Passage的内容",
+            "items": {
+                "type": "string"
+            }
+        },
+        "scriptFileList_preload": {
+            "type": "array",
+            "description": "预加载的 js 脚本文件 ， 会在引擎初始化前、mod的数据文件全部加载并合并到html的tw-storydata中后，由modloader执行并等待异步指令返回， 可以在此处调用modloader的API读取最新的Passage数据并动态修改覆盖Passage的内容\n注意 scriptFileList_preload 文件有固定的格式，参见样例 src/insertTools/MyMod/MyMod_script_preload_example.js",
+            "items": {
+                "type": "string"
+            }
+        },
+        "styleFileList": {
+            "type": "array",
+            "description": "css 样式文件",
+            "items": {
+                "type": "string"
+            }
+        },
+        "scriptFileList": {
+            "type": "array",
+            "description": "js 脚本文件，这是游戏的一部分",
+            "items": {
+                "type": "string"
+            }
+        },
+        "tweeFileList": {
+            "type": "array",
+            "description": "twee 剧本文件",
+            "items": {
+                "type": "string"
+            }
+        },
+        "imgFileList": {
+            "type": "array",
+            "description": "图片文件，尽可能不要用容易与文件中其他字符串混淆的文件路径，否则会意外破坏文件内容",
+            "items": {
+                "type": "string"
+            }
+        },
+        "additionFile": {
+            "type": "array",
+            "description": "附加文件列表，额外打包到zip中的文件，此列表中的文件不会被加载，仅作为附加文件存在。\n请注意，这里的文件会以被当作文本文件以utf-8编码读取并保存\n第一个以readme(不区分大小写)开头的文件会被作为mod的说明文件，会在mod管理器中显示",
+            "items": {
+                "type": "string"
+            }
+        },
+        "additionBinaryFile": {
+            "type": "array",
+            "description": "附加二进制文件\n如果有需要附加的二进制文件，编写在这里时 `packModZip.ts` 会将其以二进制格式保存",
+            "items": {
+                "type": "string"
+            }
+        },
+        "additionDir": {
+            "type": "array",
+            "description": "附加文件夹\n如果有需要附加的文件夹，编写在这里时 `packModZip.ts` 会将其下所有文件以二进制格式保存",
+            "items": {
+                "type": "string"
+            }
+        },
+        "addonPlugin": {
+            "type": "array",
+            "description": "依赖的插件列表，在此声明本mod依赖哪些插件，在此处声明后会调用对应的插件，不满足的依赖会在加载日志中产生警告\n要首先由提供插件的mod在EarlyLoad阶段注册插件，否则会找不到插件",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "modName": {
+                        "type": "string",
+                        "description": "插件来自哪个mod"
+                    },
+                    "addonName": {
+                        "type": "string",
+                        "description": "在那个mod中的插件名"
+                    },
+                    "modVersion": {
+                        "type": "string",
+                        "description": "插件所在mod的版本"
+                    },
+                    "params": {
+                        "type": "array",
+                        "description": "插件参数",
+                        "items": {}
+                    }
+                },
+                "required": [
+                    "modName",
+                    "addonName",
+                    "modVersion"
+                ],
+                "additionalProperties": false
+            }
+        },
+        "dependenceInfo": {
+            "type": "array",
+            "description": "依赖的mod列表，可以在此声明此mod依赖哪些前置mod，不满足的依赖会在加载日志中产生警告",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "modName": {
+                        "type": "string",
+                        "anyOf": [
+                            {
+                                "const": "ModLoaderGui"
+                            },
+                            {
+                                "const": "ModLoader",
+                                "description": "部分Mod可能需要依赖从特定ModLoader版本开始才添加进ModLoader的API，例如大部分AddonMod，可以像这样声明对ModLoader版本的依赖"
+                            },
+                            {
+                                "const": "GameVersion",
+                                "description": "部分Mod只能在特定游戏版本下才能正常工作，可以像这样声明对游戏版本的依赖。特别注意这里以等号开头表示只匹配特定版本的游戏。此处比较时只会比较游戏的本体版本号，忽略第一个\"-\"开始的所有后缀。"
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ],
+                        "description": "依赖的mod名字\n除了以上的方法可以声明对普通Mod的依赖，还有下面两个特殊的对 ModLoader 版本和 游戏版本 的依赖声明\n [ 'ModLoader' , 'GameVersion' ]"
+                    },
+                    "version": {
+                        "type": "string",
+                        "description": "依赖的mod版本\n对于版本号声明格式的简单说明：\n    版本号是以逗号为分隔的数字，比较时从左往右逐个逗号进行比较。\n    通常是3个数字组成，第一个数字表示大版本，出现破坏性（不向前兼容的）变更时数值加一，第二个数字表示小版本，有新功能时数值加一，第三个数字表示修订版本，修复bug时数值加一。\n    以\"^\"开头表示从此大版本开始到下一个大版本结束的范围，这是推荐的默认依赖写法。\n    以\"=\"或不带任何前缀表示只依赖指定的版本号。\n    以\"> < >= <=\"这种不等式写法符合对应的数学语义。\n依赖的mod版本，使用(https://www.npmjs.com/package/semver)检查版本号，符合`语义化版本控制规范` (https://semver.org/lang/zh-CN/)"
+                    }
+                },
+                "required": [
+                    "modName",
+                    "version"
+                ],
+                "additionalProperties": false
+            }
+        }
+    },
+    "required": [
+        "name",
+        "version",
+        "styleFileList",
+        "scriptFileList",
+        "tweeFileList",
+        "imgFileList",
+        "additionFile"
+    ],
+    "additionalProperties": true
+}
