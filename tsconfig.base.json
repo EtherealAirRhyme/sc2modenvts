@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+
+        "preserveSymlinks": false,
+        "strict": true,
+
+        "moduleSuffixes":[
+
+        ],
+
+        "composite": true,
+        "incremental": true,
+        "declaration": true,
+        "moduleDetection": "auto",
+        "lib": [
+            "ESNext",
+            "DOM"
+        ],
+
+        /* allow */
+        "allowJs":true,
+        "resolveJsonModule": true,
+        "allowImportingTsExtensions": false,
+        "allowSyntheticDefaultImports":true,
+        "rewriteRelativeImportExtensions": true,
+
+        "types": [
+            "node"
+        ],
+    }
+}
